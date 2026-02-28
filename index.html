@@ -28,7 +28,6 @@
       text-align: center;
       width: 360px;
       border: 4px solid #ffb3d9;
-      <button id="mainButton" onclick="handleMainButton()">Start 💖</button>
     }
 
     h1 {
@@ -42,7 +41,25 @@
       margin-bottom: 20px;
     }
 
-    
+    button {
+      background: #ff66b2;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 50px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 15px rgba(255,105,180,0.4);
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #ff3399;
+      transform: scale(1.05);
+    }
+
     #webcam-container canvas {
       border-radius: 25px;
       border: 5px solid #ff99cc;
@@ -92,8 +109,8 @@
     <h1>🎀 Bear Detector 🎀</h1>
     <p>Start camera and capture your bear magic 🐻✨</p>
 
-    <button onclick="init()">Start 💖</button>
-    <button onclick="capture()">📸 Take Photo</button>
+    <!-- ONE BUTTON ONLY -->
+    <button id="mainButton" onclick="handleMainButton()">Start 💖</button>
 
     <div id="webcam-container"></div>
     <div id="label-container"></div>
@@ -104,16 +121,16 @@
   const URL = "./model/";
 
   let model, webcam, labelContainer, maxPredictions;
-
   let started = false;
 
-function handleMainButton() {
-  if (!started) {
-    init();
-  } else {
-    capture();
+  function handleMainButton() {
+    if (!started) {
+      init();
+    } else {
+      capture();
+    }
   }
-}
+
   async function init() {
     try {
       const modelURL = URL + "model.json";
@@ -134,13 +151,13 @@ function handleMainButton() {
 
       for (let i = 0; i < maxPredictions; i++) {
         labelContainer.appendChild(document.createElement("div"));
-        
       }
-      started = true;
 
-const btn = document.getElementById("mainButton");
-btn.innerText = "📸 Capture 🎀";
-btn.style.background = "#ff3399";
+      // SWITCH BUTTON
+      started = true;
+      const btn = document.getElementById("mainButton");
+      btn.innerText = "📸 Capture 🎀";
+      btn.style.background = "#ff3399";
 
     } catch (error) {
       alert("Model failed to load 💔 Check your /model folder.");
@@ -152,7 +169,6 @@ btn.style.background = "#ff3399";
     webcam.update();
     await predict();
     window.requestAnimationFrame(loop);
-    
   }
 
   async function predict() {
