@@ -10,14 +10,15 @@
 
   <style>
     body {
-      margin: 0;
-      font-family: 'Nunito', sans-serif;
-      background: linear-gradient(135deg, #ffcce6, #ffe6f2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, #ffcce6, #ffe6f2);
+  min-height: 100vh;        /* allow page to grow */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;  /* start at top */
+  padding: 40px 0;
+}
 
     .card {
       background: #fff0f7;
@@ -27,6 +28,8 @@
       text-align: center;
       width: 360px;
       border: 4px solid #ffb3d9;
+      <button onclick="capture()">📸 Take Photo</button>
+      <div id="gallery"></div>
     }
 
     h1 {
@@ -75,7 +78,30 @@
       border-radius: 20px;
       color: #ff3399;
       font-weight: bold;
+      
     }
+      #gallery {
+  margin-top: 20px;
+}
+
+.snapshot {
+  background: #ffe6f2;
+  padding: 10px;
+  border-radius: 20px;
+  margin-top: 15px;
+}
+
+.snapshot img {
+  width: 100%;
+  border-radius: 15px;
+  border: 3px solid #ff99cc;
+}
+
+.snapshot p {
+  font-size: 14px;
+  color: #cc0066;
+  margin: 5px 0 0 0;
+}
   </style>
 </head>
 
@@ -136,6 +162,37 @@
         "💗 " + prediction[i].className + ": " + percent + "% 🎀";
     }
   }
+  async function capture() {
+  if (!model || !webcam) return;
+
+  const canvas = webcam.canvas;
+
+  // Make a copy of current frame
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = canvas.width;
+  tempCanvas.height = canvas.height;
+  const ctx = tempCanvas.getContext("2d");
+  ctx.drawImage(canvas, 0, 0);
+
+  // Predict using frozen image
+  const prediction = await model.predict(tempCanvas);
+
+  let resultText = "";
+  for (let i = 0; i < prediction.length; i++) {
+    const percent = (prediction[i].probability * 100).toFixed(1);
+    resultText += `${prediction[i].className}: ${percent}%<br>`;
+  }
+
+  // Create cute snapshot card
+  const div = document.createElement("div");
+  div.className = "snapshot";
+  div.innerHTML = `
+    <img src="${tempCanvas.toDataURL()}">
+    <p>🐻 Bear Results 🎀<br>${resultText}</p>
+  `;
+
+  document.getElementById("gallery").prepend(div);
+}  
 </script>
 
 </body>
