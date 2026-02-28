@@ -182,7 +182,26 @@
     const percent = (prediction[i].probability * 100).toFixed(1);
     resultText += `${prediction[i].className}: ${percent}%<br>`;
   }
+async function capture() {
+if (!model || !webcam) return;
 
+const canvas = webcam.canvas;
+
+// Make a copy of current frame
+const tempCanvas = document.createElement("canvas");
+tempCanvas.width = canvas.width;
+tempCanvas.height = canvas.height;
+const ctx = tempCanvas.getContext("2d");
+ctx.drawImage(canvas, 0, 0);
+
+// Predict using frozen image
+const prediction = await model.predict(tempCanvas);
+
+let resultText = "";
+for (let i = 0; i < prediction.length; i++) {
+const percent = (prediction[i].probability * 100).toFixed(1);
+resultText += `${prediction[i].className}: ${percent}%<br>`;
+}
   // Create cute snapshot card
   const div = document.createElement("div");
   div.className = "snapshot";
