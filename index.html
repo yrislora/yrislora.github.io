@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>🎀 AI Camera 🎀</title>
+  <title>🐻 Bear Detector 🐼</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 
@@ -12,105 +12,98 @@
     body {
       margin: 0;
       font-family: 'Nunito', sans-serif;
-      background: linear-gradient(135deg, #ffcce6, #ffe6f2);
+      background: linear-gradient(#dff3ff, #f5fbff);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 40px 0;
+      padding: 50px 0;
     }
 
     .card {
-      background: #fff0f7;
-      padding: 30px;
-      border-radius: 30px;
-      box-shadow: 0 10px 40px rgba(255,105,180,0.2);
+      background: white;
+      padding: 35px;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
       text-align: center;
-      width: 360px;
-      border: 4px solid #ffb3d9;
+      width: 380px;
     }
 
     h1 {
-      color: #ff4da6;
+      color: #444;
       margin-bottom: 5px;
     }
 
-    p {
-      color: #cc0066;
+    .subtitle {
+      color: #777;
       font-size: 14px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
     button {
-      background: #ff66b2;
+      background: #8fd3ff;
       border: none;
       padding: 12px 28px;
-      border-radius: 50px;
+      border-radius: 40px;
       color: white;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       transition: 0.3s;
-      box-shadow: 0 4px 15px rgba(255,105,180,0.4);
-      margin: 5px;
+      margin-bottom: 15px;
     }
 
     button:hover {
-      background: #ff3399;
+      background: #5ec3ff;
       transform: scale(1.05);
     }
 
     #webcam-container canvas {
-      border-radius: 25px;
-      border: 5px solid #ff99cc;
-      margin-top: 20px;
-    }
-
-    #label-container {
+      border-radius: 20px;
+      border: 4px solid #e6f6ff;
       margin-top: 15px;
     }
 
     #label-container div {
-      background: #ffe6f2;
+      background: #f2f9ff;
       margin: 6px 0;
       padding: 8px;
-      border-radius: 20px;
-      color: #ff3399;
+      border-radius: 15px;
+      color: #555;
       font-weight: bold;
     }
 
     #gallery {
-      margin-top: 20px;
+      margin-top: 25px;
     }
 
     .snapshot {
-      background: #ffe6f2;
-      padding: 10px;
-      border-radius: 20px;
+      background: #f8fcff;
+      padding: 12px;
+      border-radius: 18px;
       margin-top: 15px;
+      border: 2px solid #eaf7ff;
     }
 
     .snapshot img {
       width: 100%;
       border-radius: 15px;
-      border: 3px solid #ff99cc;
     }
 
     .snapshot p {
       font-size: 14px;
-      color: #cc0066;
-      margin: 5px 0 0 0;
+      margin-top: 8px;
+      color: #444;
     }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <h1>🎀 Bear Detector 🎀</h1>
-    <p>Start camera and capture your bear magic 🐻✨</p>
+    <h1>🐻 We Bare Bears Detector 🐼🐻‍❄️</h1>
+    <div class="subtitle">Ice Bear. Panda. Grizz. Who are you today? ☁️</div>
 
-    <!-- ONE BUTTON ONLY -->
-    <button id="mainButton" onclick="handleMainButton()">Start 💖</button>
+    <button id="mainButton" onclick="handleMainButton()">Start Adventure 🧭</button>
 
     <div id="webcam-container"></div>
     <div id="label-container"></div>
@@ -132,37 +125,29 @@
   }
 
   async function init() {
-    try {
-      const modelURL = URL + "model.json";
-      const metadataURL = URL + "metadata.json";
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
 
-      model = await tmImage.load(modelURL, metadataURL);
-      maxPredictions = model.getTotalClasses();
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
 
-      const flip = true;
-      webcam = new tmImage.Webcam(250, 250, flip);
-      await webcam.setup();
-      await webcam.play();
-      window.requestAnimationFrame(loop);
+    webcam = new tmImage.Webcam(250, 250, true);
+    await webcam.setup();
+    await webcam.play();
+    window.requestAnimationFrame(loop);
 
-      document.getElementById("webcam-container").appendChild(webcam.canvas);
-      labelContainer = document.getElementById("label-container");
-      labelContainer.innerHTML = "";
+    document.getElementById("webcam-container").appendChild(webcam.canvas);
+    labelContainer = document.getElementById("label-container");
+    labelContainer.innerHTML = "";
 
-      for (let i = 0; i < maxPredictions; i++) {
-        labelContainer.appendChild(document.createElement("div"));
-      }
-
-      // SWITCH BUTTON
-      started = true;
-      const btn = document.getElementById("mainButton");
-      btn.innerText = "📸 Capture 🎀";
-      btn.style.background = "#ff3399";
-
-    } catch (error) {
-      alert("Model failed to load 💔 Check your /model folder.");
-      console.error(error);
+    for (let i = 0; i < maxPredictions; i++) {
+      labelContainer.appendChild(document.createElement("div"));
     }
+
+    started = true;
+    const btn = document.getElementById("mainButton");
+    btn.innerText = "📸 Capture Bear Moment";
+    btn.style.background = "#5ec3ff";
   }
 
   async function loop() {
@@ -177,20 +162,17 @@
     for (let i = 0; i < maxPredictions; i++) {
       const percent = (prediction[i].probability * 100).toFixed(1);
       labelContainer.childNodes[i].innerHTML =
-        "💗 " + prediction[i].className + ": " + percent + "% 🎀";
+        "🐾 " + prediction[i].className + ": " + percent + "%";
     }
   }
 
   async function capture() {
     if (!model || !webcam) return;
 
-    const canvas = webcam.canvas;
-
     const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
-    const ctx = tempCanvas.getContext("2d");
-    ctx.drawImage(canvas, 0, 0);
+    tempCanvas.width = webcam.canvas.width;
+    tempCanvas.height = webcam.canvas.height;
+    tempCanvas.getContext("2d").drawImage(webcam.canvas, 0, 0);
 
     const prediction = await model.predict(tempCanvas);
 
@@ -204,7 +186,7 @@
     div.className = "snapshot";
     div.innerHTML = `
       <img src="${tempCanvas.toDataURL()}">
-      <p>🐻 Bear Results 🎀<br>${resultText}</p>
+      <p>🐻 Results:<br>${resultText}</p>
     `;
 
     document.getElementById("gallery").prepend(div);
